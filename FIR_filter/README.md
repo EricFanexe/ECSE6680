@@ -1,22 +1,64 @@
-# FIR filter Design
-## Design the Parameters
-- Parameters could be designed through matlab by applying ```firpminit``` in filter. This function could be used as ```b = firpm(n,ff,aa,w)```in which, adjust ```ff``` could adjust the passband, adjust the ```w``` could adjust the ripple and stopband attenuation. The return is the coefficient of the FIR filter.
-- Hence apply this function to generate the coefficient for the 100-tap FIR filter.
-- The magnitude-frenquancy response for this filter at $f_s=10kHz$is shown below
-  ![](./matlab1.png)
-- The stopband attenuation is a little bit lower than 80dB and in consideration of parallelize convenience, increase the tap number to 128.
-- The matlab designed magnitude-frequency response is as follows
-  ![](./design_matlab.png)
-- Finally the stopband attenuation 80.3579 dB, and passband ripple is 4.9411 dB
-- Get the b coefficients in ```b.txt``` file.
-## Hardware design
-- After get ```b```, the FIR filter could be directly designed by systemverilog
-1. First, implement a non-pipelined normal FIR filter, There are two part in the code, one is the delay and the other is accumulation.
-The details could be seen source code ![Code](./FIR.sv)
-  - The block figure is as shown below
-  - The simulation wave is shown below
-  ![](./nopip_res.png)
-2. Next implement the piplined version. 
-  - As discussed by []citation, ...
-  - The piplined simulation wave is shown as below 
-  ![](./pip_res.png)
+# FIR Filter Design
+
+## Design of Parameters
+The parameters for the FIR filter can be designed using MATLAB by applying the `firpminit` function. This function can be used as follows:
+
+```matlab
+b = firpm(n, ff, aa, w);
+```
+
+where:
+- Adjusting `ff` modifies the passband.
+- Adjusting `w` controls the ripple and stopband attenuation.
+
+The function returns the coefficients of the FIR filter.
+
+To generate the coefficients for a **100-tap FIR filter**, apply this function. The magnitude-frequency response for this filter at a sampling frequency of **10 kHz** is shown below:
+
+![Magnitude-Frequency Response](./matlab1.png)
+
+### Improving Stopband Attenuation
+The stopband attenuation is slightly lower than **80 dB**. To improve this and enhance parallelization convenience, the tap number is increased to **128**.
+
+The updated **MATLAB-designed magnitude-frequency response** is shown below:
+
+![Updated Magnitude-Frequency Response](./design_matlab.png)
+
+After design optimization:
+- **Final stopband attenuation**: **80.3579 dB**
+- **Passband ripple**: **4.9411 dB**
+
+The filter coefficients (`b`) are saved in the file [`b.txt`](./b.txt).
+
+---
+
+## Hardware Design
+Once the FIR filter coefficients (`b`) are obtained, the filter can be implemented directly in **SystemVerilog**.
+
+### 1. Non-Pipelined FIR Filter
+First, a **non-pipelined FIR filter** is implemented. The design consists of two main parts:
+- **Delay Section**: Implements shift registers to store past input samples.
+- **Accumulation Section**: Performs MAC (Multiply-Accumulate) operations.
+
+The source code is available at: [`FIR.sv`](./FIR.sv).
+
+#### Block Diagram
+*(Insert block diagram image here if available)*
+
+#### Simulation Results
+The simulation waveform of the **non-pipelined FIR filter** is shown below:
+
+![Non-Pipelined Simulation Waveform](./nopip_res.png)
+
+### 2. Pipelined FIR Filter
+Next, a **pipelined version** of the FIR filter is implemented for improved performance.
+
+#### Simulation Results
+The simulation waveform of the **pipelined FIR filter** is shown below:
+
+![Pipelined Simulation Waveform](./pip_wave.png)
+
+---
+
+This concludes the FIR filter design, covering MATLAB-based coefficient generation and SystemVerilog implementation for both non-pipelined and pipelined architectures.
+
